@@ -115,47 +115,35 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Battery Status */}
+        {/* Fan Speeds */}
         <div className="card p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <div className="label">Battery Status</div>
-              <h3 className="font-display text-lg font-bold">ENERGY RESERVE</h3>
+              <div className="label">Fan Status</div>
+              <h3 className="font-display text-lg font-bold">THERMAL MANAGEMENT</h3>
             </div>
             <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${
-                metrics?.battery.status === 'Charging'
-                  ? 'bg-upakor-accent animate-pulse'
-                  : metrics?.battery.status === 'Discharging'
-                  ? 'bg-upakor-warning'
-                  : 'bg-upakor-fg-muted'
-              }`} />
+              <div className="w-2 h-2 rounded-full bg-upakor-accent animate-pulse" />
             </div>
           </div>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between py-2 border-b border-upakor-border">
-              <span className="font-display text-xs uppercase tracking-wider text-upakor-fg-muted">Capacity</span>
+              <span className="font-display text-xs uppercase tracking-wider text-upakor-fg-muted">CPU Fan</span>
               <span className="font-display text-sm font-bold">
-                {metrics?.battery.capacity || 'N/A'}
+                {metrics?.fan_speeds.cpu_percentage || '0'}%
               </span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-upakor-border">
-              <span className="font-display text-xs uppercase tracking-wider text-upakor-fg-muted">Status</span>
-              <span className={`badge badge-accent ${
-                metrics?.battery.status === 'Charging'
-                  ? 'bg-upakor-accent/10 text-upakor-accent'
-                  : metrics?.battery.status === 'Discharging'
-                  ? 'bg-upakor-warning/10 text-upakor-warning'
-                  : 'bg-upakor-bg text-upakor-fg-muted'
-              }`}>
-                {metrics?.battery.status || 'Unknown'}
+              <span className="font-display text-xs uppercase tracking-wider text-upakor-fg-muted">GPU Fan</span>
+              <span className="font-display text-sm font-bold">
+                {metrics?.fan_speeds.gpu_percentage || '0'}%
               </span>
             </div>
             <div className="flex items-center justify-between py-2">
-              <span className="font-display text-xs uppercase tracking-wider text-upakor-fg-muted">Health</span>
+              <span className="font-display text-xs uppercase tracking-wider text-upakor-fg-muted">Mid Fan</span>
               <span className="font-display text-sm font-bold">
-                {metrics?.battery.health || 'N/A'}
+                {metrics?.fan_speeds.mid_percentage || '0'}%
               </span>
             </div>
           </div>

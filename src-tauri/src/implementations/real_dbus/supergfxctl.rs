@@ -19,7 +19,10 @@ impl RealSupergfxctl {
     pub async fn new() -> Result<Self> {
         let connection = Connection::system()
             .await
-            .map_err(|e| UpakorError::DbusConnection(e.to_string()))?;
+            .map_err(|e| UpakorError::DbusConnection {
+                message: e.to_string(),
+                source: Some(Box::new(e)),
+            })?;
 
         // Try to detect the actual supergfxd service
         let destinations = [
@@ -83,9 +86,11 @@ impl SupergfxctlTrait for RealSupergfxctl {
 
     async fn set_mode(&self, mode: GpuMode) -> Result<()> {
         if !self.is_service_available() {
-            return Err(UpakorError::ServiceUnavailable(
-                "supergfxd D-Bus service not available".to_string()
-            ));
+            return Err(UpakorError::ServiceUnavailable {
+                service: "supergfxd".to_string(),
+                message: "D-Bus service not available".to_string(),
+                suggestion: Some("Install supergfxd or ensure it's running".to_string()),
+            });
         }
 
         let mode_str = match mode {

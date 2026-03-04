@@ -19,7 +19,10 @@ impl RealAsusd {
     pub async fn new() -> Result<Self> {
         let connection = Connection::system()
             .await
-            .map_err(|e| UpakorError::DbusConnection(e.to_string()))?;
+            .map_err(|e| UpakorError::DbusConnection {
+                message: e.to_string(),
+                source: Some(Box::new(e)),
+            })?;
 
         // Try to detect the actual asusd service
         let destinations = [
@@ -78,9 +81,11 @@ impl AsusdTrait for RealAsusd {
 
     async fn set_profile(&self, profile: PowerProfile) -> Result<()> {
         if !self.is_service_available() {
-            return Err(UpakorError::ServiceUnavailable(
-                "asusd D-Bus service not available".to_string()
-            ));
+            return Err(UpakorError::ServiceUnavailable {
+                service: "asusd".to_string(),
+                message: "D-Bus service not available".to_string(),
+                suggestion: Some("Install asusd or ensure it's running".to_string()),
+            });
         }
 
         let profile_str = match profile {
@@ -106,13 +111,19 @@ impl AsusdTrait for RealAsusd {
 
     async fn set_charge_limit(&self, limit: u8) -> Result<()> {
         if limit < 50 || limit > 100 {
-            return Err(UpakorError::InvalidValue("Charge limit must be between 50 and 100".to_string()));
+            return Err(UpakorError::InvalidValue {
+                field: "charge_limit".to_string(),
+                value: limit.to_string(),
+                message: "Charge limit must be between 50 and 100".to_string(),
+            });
         }
 
         if !self.is_service_available() {
-            return Err(UpakorError::ServiceUnavailable(
-                "asusd D-Bus service not available".to_string()
-            ));
+            return Err(UpakorError::ServiceUnavailable {
+                service: "asusd".to_string(),
+                message: "D-Bus service not available".to_string(),
+                suggestion: Some("Install asusd or ensure it's running".to_string()),
+            });
         }
 
         tracing::info!("Setting charge limit to: {}", limit);
@@ -144,7 +155,10 @@ impl AsusdTrait for RealAsusd {
     async fn set_fan_curve(&self, _profile: PowerProfile, _curve: FanCurve) -> Result<()> {
         // Fan curve setting requires specific hardware support
         // TODO: Implement when D-Bus interface is available
-        Err(UpakorError::NotSupported)
+        Err(UpakorError::NotSupported {
+            feature: "fan curves".to_string(),
+            suggestion: Some("This device may not support custom fan curves".to_string()),
+        })
     }
 
     async fn get_aura_settings(&self) -> Result<AuraSettings> {
@@ -154,7 +168,10 @@ impl AsusdTrait for RealAsusd {
 
     async fn set_aura_settings(&self, _settings: AuraSettings) -> Result<()> {
         // TODO: Implement LED settings
-        Err(UpakorError::NotSupported)
+        Err(UpakorError::NotSupported {
+            feature: "RGB lighting control".to_string(),
+            suggestion: Some("This device may not have configurable RGB lighting".to_string()),
+        })
     }
 
     async fn get_temperatures(&self) -> Result<Temperature> {

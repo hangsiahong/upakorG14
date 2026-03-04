@@ -55,9 +55,11 @@ impl AsusdTrait for MockAsusd {
 
     async fn set_charge_limit(&self, limit: u8) -> Result<()> {
         if limit > 100 {
-            return Err(crate::utils::UpakorError::InvalidValue(
-                "Charge limit must be 0-100".to_string(),
-            ));
+            return Err(crate::utils::UpakorError::InvalidValue {
+                field: "charge_limit".to_string(),
+                value: limit.to_string(),
+                message: "Charge limit must be 0-100".to_string(),
+            });
         }
         let mut state = self.state.write().await;
         state.charge_limit = limit;

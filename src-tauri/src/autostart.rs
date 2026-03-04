@@ -14,14 +14,20 @@ impl AutoStartManager {
     pub fn new() -> Result<Self> {
         // Get XDG config directory
         let config_dir = dirs::config_dir()
-            .ok_or(UpakorError::Unknown("Could not find XDG config directory".to_string()))?;
+            .ok_or(UpakorError::Unknown {
+                message: "Could not find XDG config directory".to_string(),
+                source: None,
+            })?;
 
         let autostart_dir = config_dir.join("autostart");
         let desktop_file_path = autostart_dir.join("upakor-g14.desktop");
 
         // Get the current executable path
         let app_exec_path = std::env::current_exe()
-            .map_err(|e| UpakorError::Unknown(format!("Could not get executable path: {}", e)))?;
+            .map_err(|e| UpakorError::Unknown {
+                message: format!("Could not get executable path: {}", e),
+                source: None,
+            })?;
 
         Ok(Self {
             autostart_dir,
@@ -50,7 +56,10 @@ impl AutoStartManager {
         // Ensure autostart directory exists
         if !self.autostart_dir.exists() {
             fs::create_dir_all(&self.autostart_dir)
-                .map_err(|e| UpakorError::Unknown(format!("Failed to create autostart directory: {}", e)))?;
+                .map_err(|e| UpakorError::Unknown {
+                    message: format!("Failed to create autostart directory: {}", e),
+                    source: None,
+                })?;
         }
 
         // Create .desktop file content
@@ -70,7 +79,10 @@ impl AutoStartManager {
 
         // Write the .desktop file
         fs::write(&self.desktop_file_path, desktop_content)
-            .map_err(|e| UpakorError::Unknown(format!("Failed to write autostart file: {}", e)))?;
+            .map_err(|e| UpakorError::Unknown {
+                message: format!("Failed to write autostart file: {}", e),
+                source: None,
+            })?;
 
         tracing::info!("Auto-start enabled: {:?}", self.desktop_file_path);
         Ok(())
@@ -80,7 +92,10 @@ impl AutoStartManager {
     pub fn disable(&self) -> Result<()> {
         if self.desktop_file_path.exists() {
             fs::remove_file(&self.desktop_file_path)
-                .map_err(|e| UpakorError::Unknown(format!("Failed to remove autostart file: {}", e)))?;
+                .map_err(|e| UpakorError::Unknown {
+                    message: format!("Failed to remove autostart file: {}", e),
+                    source: None,
+                })?;
 
             tracing::info!("Auto-start disabled: {:?}", self.desktop_file_path);
         }

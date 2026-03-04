@@ -3,10 +3,12 @@ pub mod models;
 pub mod traits;
 pub mod implementations;
 pub mod tray;
+pub mod autostart;
 
 // Re-export for main.rs access
 pub use implementations::mock;
 pub use models::{PowerProfile, HardwareMetrics, Settings, ConfigManager};
+pub use autostart::AutoStartManager;
 
 use std::sync::Arc;
 use tokio::sync::Mutex;

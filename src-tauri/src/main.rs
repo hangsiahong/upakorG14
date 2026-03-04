@@ -110,6 +110,27 @@ fn main() {
         Ok(config.config_path().to_string_lossy().to_string())
     }
 
+    #[tauri::command]
+    async fn get_autostart_status() -> Result<bool, String> {
+        let manager = AutoStartManager::new()
+            .map_err(|e| e.to_string())?;
+        Ok(manager.is_enabled())
+    }
+
+    #[tauri::command]
+    async fn set_autostart(enabled: bool) -> Result<(), String> {
+        let manager = AutoStartManager::new()
+            .map_err(|e| e.to_string())?;
+
+        if enabled {
+            manager.enable().map_err(|e| e.to_string())?;
+        } else {
+            manager.disable().map_err(|e| e.to_string())?;
+        }
+
+        Ok(())
+    }
+
     tauri::Builder::default()
         .manage(upakorg14_lib::AppState {
             asusd: std::sync::Arc::new(tokio::sync::Mutex::new(asusd)),
@@ -126,6 +147,8 @@ fn main() {
             save_settings,
             reset_settings,
             get_config_path,
+            get_autostart_status,
+            set_autostart,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

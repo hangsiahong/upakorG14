@@ -5,6 +5,7 @@ use crate::utils::Result;
 pub mod mock;
 pub mod real_dbus;
 pub mod sysfs_fallback;
+pub mod capabilities;
 
 #[cfg(feature = "mock")]
 pub use mock::{MockAsusd, MockSupergfxctl};
@@ -13,6 +14,7 @@ pub use mock::{MockAsusd, MockSupergfxctl};
 pub use real_dbus::{RealAsusd, RealSupergfxctl};
 
 pub use sysfs_fallback::{SysMonitorTrait, RealSysMonitor, MockSysMonitor};
+pub use capabilities::{CapabilityDetector, RealCapabilityDetector, MockCapabilityDetector};
 
 pub async fn create_asusd() -> Result<Box<dyn AsusdTrait>> {
     #[cfg(feature = "mock")]

@@ -131,6 +131,14 @@ fn main() {
         Ok(())
     }
 
+    #[tauri::command]
+    async fn get_hardware_capabilities() -> Result<HardwareCapabilities, String> {
+        use upakorg14_lib::implementations::{CapabilityDetector, RealCapabilityDetector};
+
+        let detector = RealCapabilityDetector::new();
+        detector.detect_capabilities().await.map_err(|e| e.to_string())
+    }
+
     tauri::Builder::default()
         .manage(upakorg14_lib::AppState {
             asusd: std::sync::Arc::new(tokio::sync::Mutex::new(asusd)),
@@ -149,6 +157,7 @@ fn main() {
             get_config_path,
             get_autostart_status,
             set_autostart,
+            get_hardware_capabilities,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -7,7 +7,6 @@ pub mod implementations;
 pub use implementations::mock;
 pub use models::{PowerProfile, HardwareMetrics};
 
-use implementations::{create_asusd, create_supergfxctl};
 use std::sync::Arc;
 use tokio::sync::Mutex;
 

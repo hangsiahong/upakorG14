@@ -32,7 +32,7 @@ impl SupergfxctlTrait for MockSupergfxctl {
         })
     }
 
-    async fn set_mode(&self, mode: GpuMode) -> Result<()> {
+    async fn set_mode(&self, _mode: GpuMode) -> Result<()> {
         // In real implementation, this would trigger a mode switch
         // For mock, we'll just pretend it succeeds
         Ok(())

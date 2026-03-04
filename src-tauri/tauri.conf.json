@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schema.tauri.app/config/2.0.0",
+  "productName": "Upakor-G14",
+  "version": "0.1.0",
+  "identifier": "com.upakor.g14",
+  "build": {
+    "beforeDevCommand": "bun run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "bun run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Upakor-G14",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "hiddenTitle": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  }
+}

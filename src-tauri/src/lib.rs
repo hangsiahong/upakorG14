@@ -2,6 +2,7 @@ mod utils;
 pub mod models;
 pub mod traits;
 pub mod implementations;
+pub mod tray;
 
 // Re-export for main.rs access
 pub use implementations::mock;
@@ -19,6 +20,8 @@ pub struct AppState {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        // TODO: Add system tray initialization when Tauri v2 API is clear
+        // .plugin(tauri_plugin_system_tray::init())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

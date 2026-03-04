@@ -3,6 +3,7 @@ use std::time::Duration;
 use tokio::sync::Mutex;
 use tokio::time::interval;
 use tracing::{info, warn, debug};
+use tauri::{AppHandle, Emitter};
 
 use crate::models::{HardwareMetrics, Temperature, FanSpeeds, PowerDraw};
 use crate::traits::AsusdTrait;
@@ -12,6 +13,7 @@ use crate::implementations::sysfs_fallback::SysMonitorTrait;
 pub struct MetricsPoller {
     asusd: Arc<Mutex<Box<dyn AsusdTrait>>>,
     sys_monitor: Option<Arc<Mutex<Box<dyn SysMonitorTrait>>>>,
+    app_handle: Option<AppHandle>,
     poll_handle: Arc<Mutex<Option<tokio::task::JoinHandle<()>>>>,
     is_polling: Arc<Mutex<bool>>,
 }
@@ -25,9 +27,16 @@ impl MetricsPoller {
         Self {
             asusd,
             sys_monitor,
+            app_handle: None,
             poll_handle: Arc::new(Mutex::new(None)),
             is_polling: Arc::new(Mutex::new(false)),
         }
+    }
+
+    /// Set the Tauri app handle for event emission
+    pub fn with_app_handle(mut self, app_handle: AppHandle) -> Self {
+        self.app_handle = Some(app_handle);
+        self
     }
 
     /// Start polling for metrics
@@ -45,6 +54,8 @@ impl MetricsPoller {
         let asusd = self.asusd.clone();
         let sys_monitor = self.sys_monitor.clone();
         let is_polling = self.is_polling.clone();
+        let app_handle = self.app_handle.clone();
+
         let handle = tokio::spawn(async move {
             let mut timer = interval(Duration::from_millis(interval_ms));
             timer.tick().await; // Skip first immediate tick
@@ -69,12 +80,19 @@ impl MetricsPoller {
                             cpu_fan = metrics.fan_speeds.cpu_rpm,
                             "Polled hardware metrics"
                         );
-                        // TODO: Emit Tauri event to frontend
-                        // tauri::Event::emit("hardware_metrics_update", metrics)
+
+                        // Emit Tauri event to frontend if app_handle is available
+                        if let Some(ref handle) = app_handle {
+                            let _ = handle.emit("hardware_metrics_update", metrics);
+                        }
                     }
                     Err(e) => {
                         warn!("Failed to poll metrics: {}", e);
-                        // TODO: Emit error event
+
+                        // Emit error event if app_handle is available
+                        if let Some(ref handle) = app_handle {
+                            let _ = handle.emit("metrics_polling_error", format!("{}", e));
+                        }
                     }
                 }
             }

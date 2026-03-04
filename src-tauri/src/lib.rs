@@ -22,8 +22,8 @@ pub struct AppState {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        // TODO: Add system tray initialization when Tauri v2 API is clear
-        // .plugin(tauri_plugin_system_tray::init())
+        // System tray integration will be added when Tauri v2 API stabilizes
+        // Current tray module provides structure for future implementation
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

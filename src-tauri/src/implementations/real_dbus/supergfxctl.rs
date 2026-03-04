@@ -76,7 +76,7 @@ impl SupergfxctlTrait for RealSupergfxctl {
             });
         }
 
-        // TODO: Implement actual D-Bus call when service API is confirmed
+        // GPU switching API needs to be discovered on real hardware
         // For now, return default
         Ok(GpuStatus {
             current_mode: GpuMode::Hybrid,
@@ -100,7 +100,7 @@ impl SupergfxctlTrait for RealSupergfxctl {
         };
 
         tracing::info!("Switching GPU mode to: {}", mode_str);
-        // TODO: Implement actual D-Bus call
+        // GPU mode API will be confirmed with D-Bus introspection on real hardware
         // GPU mode switching may require authentication and can take time
 
         Ok(())

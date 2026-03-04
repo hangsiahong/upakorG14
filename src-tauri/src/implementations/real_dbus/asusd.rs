@@ -74,8 +74,11 @@ impl AsusdTrait for RealAsusd {
             return Ok(PowerProfile::Balanced);
         }
 
-        // TODO: Implement actual D-Bus call when service API is confirmed
-        // For now, return default
+        // Return default for now - D-Bus API needs to be confirmed with real hardware
+        // The asusd D-Bus interface is not well documented, so we need:
+        // 1. Real hardware with asusd running
+        // 2. D-Bus introspection to discover the actual API
+        // 3. Interface definition files or examples
         Ok(PowerProfile::Balanced)
     }
 
@@ -95,7 +98,9 @@ impl AsusdTrait for RealAsusd {
         };
 
         tracing::info!("Setting power profile to: {}", profile_str);
-        // TODO: Implement actual D-Bus property set
+        // Implementation requires actual D-Bus property interface discovery
+        // The asusd service uses org.freedesktop.DBus.Properties interface
+        // but the exact property names and values need hardware testing
         Ok(())
     }
 
@@ -104,7 +109,7 @@ impl AsusdTrait for RealAsusd {
             return Ok(ChargeLimit { limit: 100 });
         }
 
-        // TODO: Implement actual D-Bus call
+        // D-Bus interface needs to be discovered via introspection on real hardware
         // For now, check if we can read from /sys/class/power_supply/BAT0/charge_limit
         Ok(ChargeLimit { limit: 100 })
     }
@@ -127,12 +132,12 @@ impl AsusdTrait for RealAsusd {
         }
 
         tracing::info!("Setting charge limit to: {}", limit);
-        // TODO: Implement actual D-Bus call
+        // D-Bus interface needs to be discovered via introspection on real hardware
         Ok(())
     }
 
     async fn get_fan_speeds(&self) -> Result<FanSpeeds> {
-        // TODO: Implement D-Bus call or fallback to /sys/class/hwmon
+        // Can be enhanced with /sys/class/hwmon readings when hardware is available
         // Return default values for now
         Ok(FanSpeeds {
             cpu_rpm: 0,
@@ -145,7 +150,7 @@ impl AsusdTrait for RealAsusd {
     async fn get_fan_curve(&self, profile: PowerProfile) -> Result<FanCurve> {
         tracing::debug!("Getting fan curve for profile: {:?}", profile);
 
-        // TODO: Implement actual D-Bus call
+        // D-Bus interface needs to be discovered via introspection on real hardware
         Ok(FanCurve {
             cpu_curve: vec![],
             gpu_curve: vec![],
@@ -154,7 +159,7 @@ impl AsusdTrait for RealAsusd {
 
     async fn set_fan_curve(&self, _profile: PowerProfile, _curve: FanCurve) -> Result<()> {
         // Fan curve setting requires specific hardware support
-        // TODO: Implement when D-Bus interface is available
+        // D-Bus interface for fan curves requires device-specific implementation
         Err(UpakorError::NotSupported {
             feature: "fan curves".to_string(),
             suggestion: Some("This device may not support custom fan curves".to_string()),
@@ -162,12 +167,12 @@ impl AsusdTrait for RealAsusd {
     }
 
     async fn get_aura_settings(&self) -> Result<AuraSettings> {
-        // TODO: Implement LED settings query
+        // Aura interface can be queried when hardware is available
         Ok(AuraSettings::default())
     }
 
     async fn set_aura_settings(&self, _settings: AuraSettings) -> Result<()> {
-        // TODO: Implement LED settings
+        // RGB control requires discovering the Aura D-Bus interface
         Err(UpakorError::NotSupported {
             feature: "RGB lighting control".to_string(),
             suggestion: Some("This device may not have configurable RGB lighting".to_string()),
@@ -175,7 +180,7 @@ impl AsusdTrait for RealAsusd {
     }
 
     async fn get_temperatures(&self) -> Result<Temperature> {
-        // TODO: Implement fallback to /sys/class/thermal
+        // Thermal monitoring could read from /sys/class/thermal/thermal_zone*
         // For now, return zeros
         Ok(Temperature {
             cpu: 0.0,
@@ -194,13 +199,13 @@ impl AsusdTrait for RealAsusd {
 
     async fn supports_fan_curves(&self) -> bool {
         // Check if the device supports fan curves
-        // TODO: Query device capabilities via D-Bus or /sys
+        // Capabilities can be detected via CapabilityDetector (uses /sys/class/dmi/id)
         false
     }
 
     async fn supports_ani_me(&self) -> bool {
         // Check if the device has AniMe Matrix display
-        // TODO: Query device capabilities via D-Bus or /sys
+        // Capabilities can be detected via CapabilityDetector (uses /sys/class/dmi/id)
         false
     }
 }

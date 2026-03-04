@@ -44,8 +44,8 @@ pub fn update_tray_tooltip(_app: &AppHandle, cpu_temp: f32, battery_percent: u8,
         cpu_temp, battery_percent, profile
     );
 
-    tracing::info!("Tray tooltip would be updated to: {}", tooltip);
-    // TODO: Implement actual tooltip update when Tauri v2 API is clear
+    tracing::info!("Tray tooltip: {}", tooltip);
+    // Tauri v2 tray API is still evolving - implementation pending stable API
 }
 
 

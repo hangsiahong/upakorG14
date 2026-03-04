@@ -3,7 +3,7 @@
 
 use tauri::State;
 use upakorg14_lib::*;
-use upakorg14_lib::models::*;
+use upakorg14_lib::models::{*, GpuStatus};
 
 fn main() {
     // Initialize logging
@@ -139,6 +139,24 @@ fn main() {
         detector.detect_capabilities().await.map_err(|e| e.to_string())
     }
 
+    #[tauri::command]
+    async fn get_gpu_status(state: State<'_, upakorg14_lib::AppState>) -> Result<GpuStatus, String> {
+        let supergfxctl = state.supergfxctl.lock().await;
+        supergfxctl.get_status().await.map_err(|e| e.to_string())
+    }
+
+    #[tauri::command]
+    async fn set_gpu_mode(state: State<'_, upakorg14_lib::AppState>, mode: String) -> Result<(), String> {
+        let supergfxctl = state.supergfxctl.lock().await;
+        let gpu_mode = match mode.as_str() {
+            "integrated" => GpuMode::Integrated,
+            "hybrid" => GpuMode::Hybrid,
+            "dedicated" => GpuMode::Dedicated,
+            _ => return Err("Invalid GPU mode".to_string()),
+        };
+        supergfxctl.set_mode(gpu_mode).await.map_err(|e| e.to_string())
+    }
+
     tauri::Builder::default()
         .manage(upakorg14_lib::AppState {
             asusd: std::sync::Arc::new(tokio::sync::Mutex::new(asusd)),
@@ -158,6 +176,8 @@ fn main() {
             get_autostart_status,
             set_autostart,
             get_hardware_capabilities,
+            get_gpu_status,
+            set_gpu_mode,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

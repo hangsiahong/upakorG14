@@ -33,16 +33,45 @@ function App() {
     }
   };
 
+  const getPageTitle = () => {
+    const titles: Record<string, string> = {
+      dashboard: 'SYSTEM DASHBOARD',
+      power: 'POWER PROFILES',
+      gpu: 'GPU CONTROL',
+      battery: 'BATTERY STATUS',
+      settings: 'SYSTEM SETTINGS',
+    };
+    return titles[currentPage] || currentPage.toUpperCase();
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen bg-gray-100">
+      <div className="flex min-h-screen bg-upakor-bg">
+        {/* Sidebar - Fixed */}
         <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} />
-        <main className="flex-1 p-8 overflow-auto">
-          <div className="max-w-6xl">
-            <h1 className="text-3xl font-bold mb-6 text-gray-900">
-              {currentPage.charAt(0).toUpperCase() + currentPage.slice(1)}
-            </h1>
-            {renderPage()}
+
+        {/* Main Content - Scrollable */}
+        <main className="flex-1 overflow-auto relative z-10">
+          <div className="max-w-7xl mx-auto p-8">
+            {/* Page Header */}
+            <div className="mb-8 animate-fade-in">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="h-8 w-1 bg-upakor-accent" />
+                <h1 className="font-display text-3xl font-bold tracking-tight">
+                  {getPageTitle()}
+                </h1>
+              </div>
+              <p className="font-body text-sm text-upakor-fg-muted ml-4">
+                {currentPage === 'dashboard' && 'Real-time hardware monitoring and control'}
+                {currentPage === 'gpu' && 'Graphics processing unit mode management'}
+                {currentPage === 'settings' && 'Application configuration and preferences'}
+              </p>
+            </div>
+
+            {/* Page Content */}
+            <div className="animate-slide-in" style={{ animationDelay: '100ms' }}>
+              {renderPage()}
+            </div>
           </div>
         </main>
       </div>

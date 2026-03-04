@@ -3,29 +3,204 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply border-upakor-border;
+  }
+
   body {
-    @apply bg-gray-100 text-gray-900;
+    @apply bg-upakor-bg text-upakor-fg font-body antialiased;
+  }
+
+  /* Technical grid overlay for authenticity */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      linear-gradient(to right, rgba(13, 13, 13, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(13, 13, 13, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
   }
 }
 
 @layer components {
+  /* Card Component - Technical / Industrial */
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200;
+    @apply bg-upakor-bg-alt border border-upakor-border shadow-technical;
+    @apply transition-all duration-200 ease-out;
   }
 
+  .card:hover {
+    @apply shadow-technical-hover;
+  }
+
+  /* Technical Section Header */
+  .section-header {
+    @apply flex items-center gap-3 mb-6 pb-4;
+    @apply border-b border-upakor-border;
+  }
+
+  .section-title {
+    @apply font-display text-sm uppercase tracking-wider text-upakor-fg-muted;
+    @apply font-semibold;
+  }
+
+  /* Technical Label */
+  .label {
+    @apply font-display text-xs uppercase tracking-wider text-upakor-fg-muted;
+    @apply font-medium mb-2 block;
+  }
+
+  /* Primary Button - Technical */
   .btn-primary {
-    @apply bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors;
+    @apply px-5 py-2.5 bg-upakor-accent text-white font-display text-sm font-medium;
+    @apply border border-upakor-accent;
+    @apply transition-all duration-200 ease-out;
+    @apply shadow-technical;
   }
 
+  .btn-primary:hover {
+    @apply bg-upakor-accent-hover border-upakor-accent-hover;
+    @apply shadow-technical-hover;
+    @apply translate-y-px translate-x-px;
+  }
+
+  .btn-primary:active {
+    @apply translate-x-0 translate-y-0 shadow-technical;
+  }
+
+  /* Secondary Button */
   .btn-secondary {
-    @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors;
+    @apply px-5 py-2.5 bg-upakor-bg text-upakor-fg font-display text-sm font-medium;
+    @apply border border-upakor-border;
+    @apply transition-all duration-200 ease-out;
+    @apply shadow-technical;
   }
 
+  .btn-secondary:hover {
+    @apply bg-upakor-bg-alt border-upakor-fg-muted;
+    @apply shadow-technical-hover;
+    @apply translate-y-px translate-x-px;
+  }
+
+  .btn-secondary:active {
+    @apply translate-x-0 translate-y-0 shadow-technical;
+  }
+
+  /* Input Field - Technical */
   .input-field {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+    @apply w-full px-3 py-2 bg-upakor-bg;
+    @apply border border-upakor-border;
+    @apply font-body text-sm text-upakor-fg;
+    @apply transition-all duration-200 ease-out;
+    @apply focus:outline-none focus:border-upakor-accent focus:ring-1 focus:ring-upakor-accent;
   }
 
-  .select-field {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white;
+  .input-field:hover {
+    @apply border-upakor-fg-muted;
   }
+
+  /* Select Field - Technical */
+  .select-field {
+    @apply w-full px-3 py-2 bg-upakor-bg;
+    @apply border border-upakor-border;
+    @apply font-body text-sm text-upakor-fg;
+    @apply transition-all duration-200 ease-out;
+    @apply focus:outline-none focus:border-upakor-accent focus:ring-1 focus:ring-upakor-accent;
+    @apply appearance-none cursor-pointer;
+    @apply bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234A4A4A' d='M6 8L1 3h10z'/%3E%3C/svg%3E")];
+    @apply bg-no-repeat bg-right-3 bg-center;
+    @apply pr-8;
+  }
+
+  .select-field:hover {
+    @apply border-upakor-fg-muted;
+  }
+
+  /* Checkbox - Technical */
+  .checkbox {
+    @apply w-4 h-4 border-2 border-upakor-border rounded-sm;
+    @apply transition-all duration-200 ease-out;
+    @apply appearance-none cursor-pointer;
+    @apply relative;
+  }
+
+  .checkbox:checked {
+    @apply bg-upakor-accent border-upakor-accent;
+  }
+
+  .checkbox:checked::after {
+    content: '✓';
+    @apply absolute top-0 left-0.5 text-white text-xs font-bold;
+  }
+
+  .checkbox:hover {
+    @apply border-upakor-accent;
+  }
+
+  /* Slider - Technical */
+  .slider {
+    @apply w-full h-2 bg-upakor-bg-alt border border-upakor-border rounded-sm;
+    @apply appearance-none cursor-pointer;
+  }
+
+  .slider::-webkit-slider-thumb {
+    @apply appearance-none w-4 h-4 bg-upakor-accent border-2 border-upakor-bg;
+    @apply cursor-pointer;
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .slider::-webkit-slider-thumb:hover {
+    @apply bg-upakor-accent-hover scale-110;
+  }
+
+  /* Status Indicator */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .status-dot.active {
+    @apply bg-upakor-accent;
+  }
+
+  .status-dot.warning {
+    @apply bg-upakor-warning;
+  }
+
+  .status-dot.danger {
+    @apply bg-upakor-danger;
+  }
+
+  /* Technical Badge */
+  .badge {
+    @apply inline-flex items-center px-2 py-1;
+    @apply font-display text-xs font-medium uppercase tracking-wider;
+    @apply border shadow-technical;
+  }
+
+  .badge-accent {
+    @apply bg-upakor-accent/10 text-upakor-accent border-upakor-accent/20;
+  }
+
+  .badge-muted {
+    @apply bg-upakor-bg text-upakor-fg-muted border-upakor-border;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Animation delays for staggered entrance */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
 }

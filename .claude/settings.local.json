@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find . -name \"*.md\" -o -name \"*.json\" -o -name \"*.toml\" 2>/dev/null | head -20)",
+      "Bash(which asusctl 2>/dev/null && asusctl version 2>/dev/null || echo \"asusctl not found\")",
+      "Bash(which supergfxctl 2>/dev/null && supergfxctl --version 2>/dev/null || echo \"supergfxctl not found\")",
+      "Bash(busctl --system list 2>/dev/null | grep -E \"asus|supergfx\" || echo \"No D-Bus services found\")",
+      "Bash(git add docs/plans/2026-03-14-upakor-g14-implementation.md && git commit -m \"docs: add detailed implementation plan for Upakor-G14\n\n- 20 bite-sized tasks covering full MVP implementation\n- Trait-based architecture with dual-mode development\n- Dashboard UI with power profiles, charge limits, hardware monitoring\n- Mock implementation for off-hardware development\n- Real D-Bus integration structure\")",
+      "Bash(cd /home/jiren/projects/funs/upakorG14/src-tauri && cargo check)",
+      "Bash(git add src-tauri/Cargo.toml package.json tailwind.config.js postcss.config.js)"
+    ]
+  }
+}

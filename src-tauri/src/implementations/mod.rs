@@ -4,12 +4,15 @@ use crate::utils::Result;
 // Make both modules available - the feature flag controls which one gets used
 pub mod mock;
 pub mod real_dbus;
+pub mod sysfs_fallback;
 
 #[cfg(feature = "mock")]
 pub use mock::{MockAsusd, MockSupergfxctl};
 
 #[cfg(not(feature = "mock"))]
 pub use real_dbus::{RealAsusd, RealSupergfxctl};
+
+pub use sysfs_fallback::{SysMonitorTrait, RealSysMonitor, MockSysMonitor};
 
 pub async fn create_asusd() -> Result<Box<dyn AsusdTrait>> {
     #[cfg(feature = "mock")]

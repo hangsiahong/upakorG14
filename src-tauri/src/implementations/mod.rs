@@ -6,6 +6,7 @@ pub mod mock;
 pub mod real_dbus;
 pub mod sysfs_fallback;
 pub mod capabilities;
+pub mod metrics_poller;
 
 #[cfg(feature = "mock")]
 pub use mock::{MockAsusd, MockSupergfxctl};
@@ -15,6 +16,7 @@ pub use real_dbus::{RealAsusd, RealSupergfxctl};
 
 pub use sysfs_fallback::{SysMonitorTrait, RealSysMonitor, MockSysMonitor};
 pub use capabilities::{CapabilityDetector, RealCapabilityDetector, MockCapabilityDetector};
+pub use metrics_poller::MetricsPoller;
 
 pub async fn create_asusd() -> Result<Box<dyn AsusdTrait>> {
     #[cfg(feature = "mock")]

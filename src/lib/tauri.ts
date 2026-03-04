@@ -7,7 +7,7 @@ export const tauri = {
   setPowerProfile: (profile: string) => invoke<void>('set_power_profile', { profile }),
 
   // Charge limit
-  getChargeLimit: () => invoke<number>('get_charge_limit'),
+  getChargeLimit: () => invoke<{ limit: number }>('get_charge_limit'),
   setChargeLimit: (limit: number) => invoke<void>('set_charge_limit', { limit }),
 
   // Hardware monitoring

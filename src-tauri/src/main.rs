@@ -35,6 +35,10 @@ fn main() {
         )
     });
 
+    // Initialize config manager
+    let config = ConfigManager::new()
+        .expect("Failed to initialize config manager");
+
     #[tauri::command]
     async fn get_power_profile(state: State<'_, upakorg14_lib::AppState>) -> Result<PowerProfile, String> {
         let asusd = state.asusd.lock().await;
@@ -80,10 +84,37 @@ fn main() {
         })
     }
 
+    #[tauri::command]
+    async fn get_settings(state: State<'_, upakorg14_lib::AppState>) -> Result<Settings, String> {
+        let config = state.config.lock().await;
+        config.load_settings().map_err(|e| e.to_string())
+    }
+
+    #[tauri::command]
+    async fn save_settings(state: State<'_, upakorg14_lib::AppState>, settings: Settings) -> Result<(), String> {
+        let config = state.config.lock().await;
+        config.save_settings(&settings).map_err(|e| e.to_string())
+    }
+
+    #[tauri::command]
+    async fn reset_settings(state: State<'_, upakorg14_lib::AppState>) -> Result<Settings, String> {
+        let config = state.config.lock().await;
+        let default = Settings::default();
+        config.save_settings(&default).map_err(|e| e.to_string())?;
+        Ok(default)
+    }
+
+    #[tauri::command]
+    async fn get_config_path(state: State<'_, upakorg14_lib::AppState>) -> Result<String, String> {
+        let config = state.config.lock().await;
+        Ok(config.config_path().to_string_lossy().to_string())
+    }
+
     tauri::Builder::default()
         .manage(upakorg14_lib::AppState {
             asusd: std::sync::Arc::new(tokio::sync::Mutex::new(asusd)),
             supergfxctl: std::sync::Arc::new(tokio::sync::Mutex::new(supergfxctl)),
+            config: std::sync::Arc::new(tokio::sync::Mutex::new(config)),
         })
         .invoke_handler(tauri::generate_handler![
             get_power_profile,
@@ -91,6 +122,10 @@ fn main() {
             get_charge_limit,
             set_charge_limit,
             get_hardware_metrics,
+            get_settings,
+            save_settings,
+            reset_settings,
+            get_config_path,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
